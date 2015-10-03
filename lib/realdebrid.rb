@@ -136,6 +136,7 @@ module RealDebrid
 
       if response.is_a?(Net::HTTPSuccess)
         begin
+          require 'json'
           JSON.parse(response.body)
         rescue
           response.body
