@@ -21,21 +21,7 @@ module RealDebrid
 
     attr_accessor :username
     attr_accessor :password
-    attr_reader :cookie
-
-    # Assigne le cookie et teste sa validité
-    #
-    # *Params* :
-    #  - _String_ +cookie+ Chaîne du cookie de connexion
-    # *Raises* :
-    #   - _ArgumentError_ : Le cookie transmis est incorrect
-    def cookie=(cookie)
-      if self.cookie_valid? cookie
-        @cookie = cookie
-      else
-        raise ArgumentError, 'Cookie is invalid.'
-      end
-    end
+    attr_accessor :cookie
 
     # Constructeur
     #
@@ -46,10 +32,11 @@ module RealDebrid
 
       if params[:cookie]
         self.cookie = params[:cookie]
-      else
-        self.username = params[:username] if params[:username]
-        self.password = params[:password] if params[:password]
-        self.login
+        raise 'Invalid cookie.' unless self.cookie_valid? cookie
+      elsif params[:username] && params[:password]
+        self.username = params[:username]
+        self.password = params[:password]
+        raise 'Invalid username and/or password.' unless self.login
       end
     end
 
@@ -59,15 +46,17 @@ module RealDebrid
     # *Raises* :
     #   - _ArgumentError_ : Le couple login/mot de passe est incorrect
     def login
-      require 'digest/md5'
+      return false if self.username.nil? || self.password.nil?
 
+      require 'digest/md5'
       params = { user: self.username, pass: Digest::MD5.hexdigest(self.password) }
       response = request "#{URL_PREFIX_BASE}#{URL_SUFFIX_LOGIN}", params
 
-      if response && response['error'] == 0
+      if response && response['error'] == 0 && response['cookie']
         self.cookie = response['cookie']
+        true
       else
-        raise ArgumentError, 'Bad login/password.'
+        false
       end
     end
 
