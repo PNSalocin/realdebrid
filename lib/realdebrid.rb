@@ -109,7 +109,7 @@ module RealDebrid
     #   - _Bool_ : true si le cookie est valide, false dans le cas contraire
     def cookie_valid?(cookie = nil)
       account_info = self.account_info cookie
-      account_info.is_a?(Hash) && account_info['error'].blank?
+      account_info.is_a?(Hash) && account_info['error'].nil?
     end
 
     private
