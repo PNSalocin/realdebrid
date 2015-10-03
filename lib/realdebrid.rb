@@ -97,7 +97,8 @@ module RealDebrid
     # *Returns* :
     #   - _Bool_ : true si le cookie est valide, false dans le cas contraire
     def hosters
-      request "#{URL_PREFIX_BASE}#{URL_SUFFIX_HOSTERS}"
+      hosters = request "#{URL_PREFIX_BASE}#{URL_SUFFIX_HOSTERS}"
+      parse_json "[#{hosters}]"
     end
 
     # Teste la validité du cookie d'instance par défaut, ou de celui passé en paramètre si existant
@@ -134,14 +135,19 @@ module RealDebrid
       response = http.request request
 
       if response.is_a?(Net::HTTPSuccess)
-        begin
-          require 'json'
-          JSON.parse(response.body)
-        rescue
-          response.body
-        end
+        parse_json response.body
       else
         false
+      end
+    end
+
+    # TODO
+    def parse_json(json_string)
+      begin
+        require 'json'
+        JSON.parse json_string
+      rescue
+        json_string
       end
     end
   end
