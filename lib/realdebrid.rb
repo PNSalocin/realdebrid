@@ -32,7 +32,7 @@ module RealDebrid
 
       if params[:cookie]
         self.cookie = params[:cookie]
-        raise 'Invalid cookie.' unless self.cookie_valid? cookie
+        raise 'Invalid cookie.' unless self.cookie_valid?
       elsif params[:username] && params[:password]
         self.username = params[:username]
         self.password = params[:password]
@@ -86,9 +86,8 @@ module RealDebrid
     #   - _String|nil_ +cookie+ (optionnel) Chaîne du cookie de connexion
     # *Returns* :
     #   - _Bool_ : true si le cookie est valide, false dans le cas contraire
-    def account_info(cookie = nil)
-      cookie = cookie || self.cookie
-      request "#{URL_PREFIX_BASE}#{URL_SUFFIX_ACCOUNT}", { out: 'json' }, cookie
+    def account_info
+      request "#{URL_PREFIX_BASE}#{URL_SUFFIX_ACCOUNT}", { out: 'json' }, self.cookie
     end
 
     # Retourne les hosters actuellement actifs
@@ -107,8 +106,8 @@ module RealDebrid
     #   - _String|nil_ +cookie+ (optionnel) Chaîne du cookie de connexion
     # *Returns* :
     #   - _Bool_ : true si le cookie est valide, false dans le cas contraire
-    def cookie_valid?(cookie = nil)
-      account_info = self.account_info cookie
+    def cookie_valid?
+      account_info = self.account_info
       account_info.is_a?(Hash) && account_info['error'].nil?
     end
 
