@@ -1,7 +1,10 @@
 require "realdebrid/version"
 
+# https://real-debrid.com/
 module RealDebrid
 
+  # Permet, après authentification, de principalement débrider des liens, de récupérer les informations du compte
+  # et de récupérer la liste des hosters
   class Api
 
     # URL de base vers real-debrid
@@ -19,14 +22,21 @@ module RealDebrid
     # Suffixe de récupération des hosters
     URL_SUFFIX_HOSTERS = 'api/hosters.php'
 
+    # Nom d'utilisateur realdebrid
     attr_accessor :username
+
+    # Mot de passe realdebrid
     attr_accessor :password
+
+    # Cookie de connexion realdebrid
     attr_accessor :cookie
 
     # Constructeur
     #
     # *Params* :
-    #  - _Hash|nil_ +params+ (optionnel) TODO
+    #  - _Hash|nil_ +params+
+    # *Raises* :
+    #   - _StandardError_ : Le couple login/mot de passe est incorrect
     def initialize(params = {})
       require 'net/http'
 
@@ -41,10 +51,10 @@ module RealDebrid
     end
 
     # Effectue un login (aka une récupération du cookie de connexion) vers real-debrid
-    # en fonction des paramètres internes username et password
+    # en fonction des paramètres username et password
     #
-    # *Raises* :
-    #   - _ArgumentError_ : Le couple login/mot de passe est incorrect
+    # *Returns* :
+    #   - _Bool_ : true si la connexion a reussie, false dans le cas contraire
     def login
       return false if self.username.nil? || self.password.nil?
 
@@ -66,7 +76,8 @@ module RealDebrid
     #   - _String_ +link+ Uri à débrider
     #   - _String_ +password+ (optionnel) Mot de passe
     # *Returns* :
-    #   - _Hash|Bool_ : false si la requête à échouée, hash du json décodé dans le cas contraire
+    #   - _Hash|Array|String|Bool_ : false si la requête à échouée, un objet/tableau correspondant json décodé
+    #                                (ou une chaîne si celui-ci n'a pu l'être) dans le cas contraire
     def unrestrict(link, password = nil)
       params = { link: link }
       params['password'] = password if password
@@ -82,29 +93,25 @@ module RealDebrid
 
     # Retourne les informations associées au compte
     #
-    # *Params* :
-    #   - _String|nil_ +cookie+ (optionnel) Chaîne du cookie de connexion
     # *Returns* :
-    #   - _Bool_ : true si le cookie est valide, false dans le cas contraire
+    #   - _Hash|Array|String|Bool_ : false si la requête à échouée, un objet/tableau correspondant json décodé
+    #                                (ou une chaîne si celui-ci n'a pu l'être) dans le cas contraire
     def account_info
       request "#{URL_PREFIX_BASE}#{URL_SUFFIX_ACCOUNT}", { out: 'json' }, self.cookie
     end
 
     # Retourne les hosters actuellement actifs
     #
-    # *Params* :
-    #   - _String|nil_ +cookie+ (optionnel) Chaîne du cookie de connexion
     # *Returns* :
-    #   - _Bool_ : true si le cookie est valide, false dans le cas contraire
+    #   - _Hash|Array|String|Bool_ : false si la requête à échouée, un objet/tableau correspondant json décodé
+    #                                (ou une chaîne si celui-ci n'a pu l'être) dans le cas contraire
     def hosters
       hosters = request "#{URL_PREFIX_BASE}#{URL_SUFFIX_HOSTERS}"
       parse_json "[#{hosters}]"
     end
 
-    # Teste la validité du cookie d'instance par défaut, ou de celui passé en paramètre si existant
+    # Teste la validité de l'actuel cookie
     #
-    # *Params* :
-    #   - _String|nil_ +cookie+ (optionnel) Chaîne du cookie de connexion
     # *Returns* :
     #   - _Bool_ : true si le cookie est valide, false dans le cas contraire
     def cookie_valid?
@@ -121,7 +128,8 @@ module RealDebrid
     #   - _Hash_ +params+ (optionnel) Paramètres GET de la requête
     #   - _String_ +cookie+ (optionnel) Cookie de la requête
     # *Returns* :
-    #   - _Hash|Bool_ : false si la requête à échouée, hash du json décodé dans le cas contraire
+    #   - _Hash|Array|String|Bool_ : false si la requête à échouée, un objet/tableau correspondant json décodé
+    #                                (ou une chaîne si celui-ci n'a pu l'être) dans le cas contraire
     def request(uri, params = {}, cookie = nil)
       uri = URI.parse uri
       uri.query = URI.encode_www_form params
@@ -141,7 +149,13 @@ module RealDebrid
       end
     end
 
-    # TODO
+    # Tente de parser le JSON passé en paramètre
+    #
+    # *Params* :
+    #   - _String_ +json_string+ JSON à décoder
+    # *Returns* :
+    #   - _Hash|Array|String_ : JSON décodé ou la forme d'un tableau ou d'un objet,
+    #                           ou bien la chaîne d'origine si elle n'a pu être décodée
     def parse_json(json_string)
       begin
         require 'json'
