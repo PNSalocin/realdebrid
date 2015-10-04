@@ -16,7 +16,7 @@ describe RealDebrid::Api do
     end
 
     context 'correct' do
-      include_examples 'with_successful_auth', RealDebrid::Api.new(username: VALID_USERNAME, password: VALID_PASSWORD)
+      include_examples 'with successful auth', RealDebrid::Api.new(username: VALID_USERNAME, password: VALID_PASSWORD)
     end
   end
 
@@ -30,7 +30,7 @@ describe RealDebrid::Api do
     end
 
     context 'correct' do
-      include_examples 'with_successful_auth' do
+      include_examples 'with successful auth' do
         let(:realdebrid) {
           realdebrid = RealDebrid::Api.new username: VALID_USERNAME, password: VALID_PASSWORD
           RealDebrid::Api.new(cookie: realdebrid.cookie)

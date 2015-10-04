@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-shared_examples 'with_successful_auth' do |rd|
+shared_examples 'with successful auth' do |rd|
 
   let(:realdebrid) { rd }
 
@@ -9,6 +9,7 @@ shared_examples 'with_successful_auth' do |rd|
       it 'should return link informations' do
         link = realdebrid.unrestrict VALID_LINK
         expect(link).to be_a Hash
+        expect(link['error']).to eq 0
       end
     end
 
@@ -20,10 +21,17 @@ shared_examples 'with_successful_auth' do |rd|
     end
   end
 
+  context 'and try to get account infos' do
+    it 'should return hosters' do
+      account_info = realdebrid.account_info
+      expect(account_info).to be_a Hash
+    end
+  end
+
   context 'and try to get hosters list' do
     it 'should return hosters' do
-      link = realdebrid.hosters
-      expect(link).to be_a Array
+      hosters = realdebrid.hosters
+      expect(hosters).to be_a Array
     end
   end
 
