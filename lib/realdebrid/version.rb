@@ -1,3 +1,4 @@
 module RealDebrid
-  VERSION = "0.1.0"
+  # You can't see me
+  VERSION = '0.2.0'
 end
