@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 shared_examples 'with successful auth' do |rd|
-
   let(:realdebrid) { rd }
 
   context 'and try to unrestrict a' do
@@ -34,5 +33,4 @@ shared_examples 'with successful auth' do |rd|
       expect(hosters).to be_a Array
     end
   end
-
 end

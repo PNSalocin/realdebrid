@@ -1,4 +1,4 @@
-require "realdebrid/version"
+require 'realdebrid/version'
 
 # https://real-debrid.com/
 module RealDebrid
@@ -42,11 +42,11 @@ module RealDebrid
 
       if params[:cookie]
         self.cookie = params[:cookie]
-        raise 'Invalid cookie.' unless self.cookie_valid?
+        fail 'Invalid cookie.' unless self.cookie_valid?
       elsif params[:username] && params[:password]
         self.username = params[:username]
         self.password = params[:password]
-        raise 'Invalid username and/or password.' unless self.login
+        fail 'Invalid username and/or password.' unless login
       end
     end
 
@@ -56,10 +56,10 @@ module RealDebrid
     # *Returns* :
     #   - _Bool_ : true si la connexion a reussie, false dans le cas contraire
     def login
-      return false if self.username.nil? || self.password.nil?
+      return false if username.nil? || password.nil?
 
       require 'digest/md5'
-      params = { user: self.username, pass: Digest::MD5.hexdigest(self.password) }
+      params = { user: username, pass: Digest::MD5.hexdigest(password) }
       response = request "#{URL_PREFIX_BASE}#{URL_SUFFIX_LOGIN}", params
 
       if response && response['error'] == 0 && response['cookie']
@@ -82,7 +82,7 @@ module RealDebrid
       params = { link: link }
       params['password'] = password if password
 
-      response = request "#{URL_PREFIX_BASE}#{URL_SUFFIX_UNRESTRICT}", params, self.cookie
+      response = request "#{URL_PREFIX_BASE}#{URL_SUFFIX_UNRESTRICT}", params, cookie
 
       if response && response['error'] == 0
         response
@@ -97,7 +97,7 @@ module RealDebrid
     #   - _Hash|Array|String|Bool_ : false si la requête à échouée, un objet/tableau correspondant json décodé
     #                                (ou une chaîne si celui-ci n'a pu l'être) dans le cas contraire
     def account_info
-      request "#{URL_PREFIX_BASE}#{URL_SUFFIX_ACCOUNT}", { out: 'json' }, self.cookie
+      request "#{URL_PREFIX_BASE}#{URL_SUFFIX_ACCOUNT}", { out: 'json' }, cookie
     end
 
     # Retourne les hosters actuellement actifs
@@ -142,11 +142,7 @@ module RealDebrid
 
       response = http.request request
 
-      if response.is_a?(Net::HTTPSuccess)
-        parse_json response.body
-      else
-        false
-      end
+      response.is_a?(Net::HTTPSuccess) ? parse_json(response.body) : false
     end
 
     # Tente de parser le JSON passé en paramètre
@@ -157,12 +153,10 @@ module RealDebrid
     #   - _Hash|Array|String_ : JSON décodé ou la forme d'un tableau ou d'un objet,
     #                           ou bien la chaîne d'origine si elle n'a pu être décodée
     def parse_json(json_string)
-      begin
-        require 'json'
-        JSON.parse json_string
-      rescue
-        json_string
-      end
+      require 'json'
+      JSON.parse json_string
+    rescue
+      json_string
     end
   end
 end

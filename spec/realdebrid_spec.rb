@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 describe RealDebrid::Api do
-
   # Utilisateur valide pour la connexion à realdebrid
   VALID_USERNAME = ''
 
@@ -15,7 +14,7 @@ describe RealDebrid::Api do
     context 'incorrect' do
       it 'should raise error' do
         expect {
-          realdebrid = RealDebrid::Api.new username: 'invalidusername', password: '1024'
+          RealDebrid::Api.new username: 'invalidusername', password: '1024'
         }.to raise_error 'Invalid username and/or password.'
       end
     end
@@ -29,7 +28,7 @@ describe RealDebrid::Api do
     context 'incorrect' do
       it 'should raise error' do
         expect {
-          realdebrid = RealDebrid::Api.new cookie: 'invalidcookie'
+          RealDebrid::Api.new cookie: 'invalidcookie'
         }.to raise_error 'Invalid cookie.'
       end
     end
@@ -45,7 +44,6 @@ describe RealDebrid::Api do
   end
 
   context 'when cookie and username/password are not set' do
-
     before { @realdebrid = RealDebrid::Api.new }
 
     context 'and try to get hosters list' do
