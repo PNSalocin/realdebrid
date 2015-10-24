@@ -2,13 +2,13 @@ require 'spec_helper'
 
 describe RealDebrid::Api do
   # Utilisateur valide pour la connexion à realdebrid
-  VALID_USERNAME = ''
+  VALID_USERNAME = ENV['REALDEBRID_VALID_USERNAME'] || ''
 
   # Mot de passe valide associé à l'utilisateur pour la connexion à realdebrid
-  VALID_PASSWORD = ''
+  VALID_PASSWORD = ENV['REALDEBRID_VALID_PASSWORD'] || ''
 
   # Lien à débrider valide (en provenance d'un hoster actuellement fonctionnel)
-  VALID_LINK     = ''
+  VALID_LINK     = ENV['REALDEBRID_VALID_LINK'] || ''
 
   context 'when login/password is' do
     context 'incorrect' do
