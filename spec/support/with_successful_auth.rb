@@ -8,7 +8,8 @@ shared_examples 'with successful auth' do |rd|
       it 'should return link informations' do
         link = realdebrid.unrestrict VALID_LINK
         expect(link).to be_a Hash
-        expect(link['error']).to eq 0
+        # 3 => Workaround for dedicated servers
+        expect([0, 3]).to include link['error']
       end
     end
 
