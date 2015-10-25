@@ -1,9 +1,17 @@
 Metrics/LineLength:
   Max: 120
 
+Metrics/AbcSize:
+  Max: 18
+
+Metrics/MethodLength:
+  Max: 15
+
+# For tests
 Style/BlockDelimiters:
   Enabled: false
 
+# Stupid frenchie
 Style/AsciiComments:
   Enabled: false
 
