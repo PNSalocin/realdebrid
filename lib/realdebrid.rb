@@ -84,6 +84,7 @@ module RealDebrid
 
       response = request "#{URL_PREFIX_BASE}#{URL_SUFFIX_UNRESTRICT}", params, cookie
 
+      puts response.inspect
       if response && response['error'] == 0
         response
       else
