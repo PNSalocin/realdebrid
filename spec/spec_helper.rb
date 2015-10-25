@@ -1,5 +1,5 @@
 require 'coveralls'
-Coveralls.wear!('rails')
+Coveralls.wear!
 
 $LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
 require 'realdebrid'
