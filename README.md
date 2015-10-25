@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/PNSalocin/realdebrid.svg?branch=master)](https://travis-ci.org/PNSalocin/realdebrid)
+
 # Realdebrid
 
 Easy dialog with realdebrid.
@@ -44,12 +46,12 @@ hosters = rd_api.hosters
 
 ## Tests
 
-Please fill the following constants in `realdebrid_spec.rb`:
+Please fill the following constants, or set the corresponding ENV variables in `realdebrid_spec.rb`:
 
 ```ruby
-  VALID_USERNAME = ''
-  VALID_PASSWORD = ''
-  VALID_LINK     = ''
+  VALID_USERNAME = ENV['REALDEBRID_VALID_USERNAME'] || ''
+  VALID_PASSWORD = ENV['REALDEBRID_VALID_PASSWORD'] || ''
+  VALID_LINK     = ENV['REALDEBRID_VALID_LINK'] || ''
 ```
 
 to run the tests.
