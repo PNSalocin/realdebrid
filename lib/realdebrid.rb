@@ -31,6 +31,9 @@ module RealDebrid
     # Cookie de connexion realdebrid
     attr_accessor :cookie
 
+    # Récupération de la dernière erreur survenue
+    attr_accessor :last_error
+
     # Constructeur
     #
     # *Params* :
@@ -62,10 +65,11 @@ module RealDebrid
       params = { user: username, pass: Digest::MD5.hexdigest(password) }
       response = request "#{URL_PREFIX_BASE}#{URL_SUFFIX_LOGIN}", params
 
-      if response && response['error'] == 0 && response['cookie']
+      if response['error'] == 0 && response['cookie']
         self.cookie = response['cookie']
         true
       else
+        self.last_error = response
         false
       end
     end
@@ -81,13 +85,12 @@ module RealDebrid
     def unrestrict(link, password = nil)
       params = { link: link }
       params['password'] = password if password
-
       response = request "#{URL_PREFIX_BASE}#{URL_SUFFIX_UNRESTRICT}", params, cookie
 
       if response && response['error'] == 0
         response
       else
-        false
+        self.last_error = response
       end
     end
 
@@ -141,8 +144,7 @@ module RealDebrid
       request['Cookie'] = cookie if cookie
 
       response = http.request request
-
-      response.is_a?(Net::HTTPSuccess) ? parse_json(response.body) : false
+      response.is_a?(Net::HTTPSuccess) ? parse_json(response.body) : format_http_error
     end
 
     # Tente de parser le JSON passé en paramètre
@@ -157,6 +159,14 @@ module RealDebrid
       JSON.parse json_string
     rescue
       json_string
+    end
+
+    # Retourne un hash d'erreur Net::HTTP
+    #
+    # *Returns* :
+    #   - _Hash_
+    def format_http_error
+      { 'error' => -1, 'message' => 'Net::HTTP Error' }
     end
   end
 end

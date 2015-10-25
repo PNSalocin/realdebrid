@@ -55,18 +55,30 @@ describe RealDebrid::Api do
 
     context 'and try to unrestrict a' do
       context 'valid link' do
-        it 'should return false' do
+        it 'should return error code' do
           link = @realdebrid.unrestrict VALID_LINK
-          expect(link).to eq false
+          expect(link).to be_a Hash
+          expect(link['error']).to eq 1
         end
       end
 
       context 'invalid link' do
         it 'should return false' do
           link = @realdebrid.unrestrict 'http://www.invalidlink.com'
-          expect(link).to eq false
+          expect_error link, [1]
+          expect_error @realdebrid.last_error, [1]
         end
       end
     end
+  end
+
+  # Valide que le hash passé en paramètre est bien un hash d'erreur contenant un des codes transmis
+  #
+  # *Params* :
+  #   - _Hash_ +hash+
+  #   - _Array_ +error_codes+
+  def expect_error(hash, error_codes)
+    expect(hash).to be_a Hash
+    expect(error_codes).to include hash['error']
   end
 end

@@ -8,14 +8,16 @@ shared_examples 'with successful auth' do |rd|
       it 'should return link informations' do
         link = realdebrid.unrestrict VALID_LINK
         expect(link).to be_a Hash
-        expect(link['error']).to eq 0
+        # 3 => Workaround for dedicated servers
+        expect([0, 3]).to include link['error']
       end
     end
 
     context 'invalid link' do
-      it 'should return false' do
+      it 'should return error code' do
         link = realdebrid.unrestrict 'http://www.invalidlink.com'
-        expect(link).to eq false
+        expect_error link, [3, 4]
+        expect_error realdebrid.last_error, [3, 4]
       end
     end
   end
