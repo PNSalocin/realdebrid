@@ -1,7 +1,8 @@
+# frozen_string_literal: true
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'realdebrid/version'
+require 'realdebrid'
 
 Gem::Specification.new do |spec|
   spec.name          = "realdebrid"
@@ -23,4 +24,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rspec"
   spec.add_development_dependency "rubocop"
   spec.add_development_dependency "coveralls"
+  spec.add_development_dependency "yard"
 end

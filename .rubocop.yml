@@ -23,7 +23,7 @@ Style/EmptyLinesAroundModuleBody:
 
 AllCops:
   Exclude:
-    - 'spec/spec_helper.rb'
-    - 'lib/realdebrid/version.rb'
     - 'Rakefile'
+    - 'Gemfile'
     - 'realdebrid.gemspec'
+    - 'spec/spec_helper.rb'
